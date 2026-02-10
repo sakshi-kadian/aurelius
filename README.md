@@ -27,7 +27,7 @@ graph TD
     Backend -->|"Result + 3D Coordinates"| Frontend
 ```
 
-The system operates on a "Two-Brain" architecture:
+The system operates on a Two-Brain architecture:
 
 1.  **The Neural Brain (Right Hemisphere) - Llama 3 / ChromaDB**
     *   Handles unstructured semantics, nuance, and natural language generation.
@@ -54,7 +54,7 @@ User logic queries are visualized in a high-performance 3D Knowledge Space.
 
 ### 2. Semantic Triplet Extraction
 The engine automatically ingests PDF research papers and converts them into structured logic:
-> *"Attention mechanisms improved translation quality."*
+> *Attention mechanisms improved translation quality.*
 > $\rightarrow$ `(Attention Mechanisms)-[IMPROVED]->(Translation Quality)`
 
 ### 3. "Confidence-Aware" Traversal
