@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.py[cod]
+venv/
+.env
+server/.env
+
+# Node
+node_modules/
+.next/
+out/
+build/
+coverage/
+
+# Project Specific
+infrastructure/

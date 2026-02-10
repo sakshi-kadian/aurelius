@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-space: var(--font-space-grotesk), var(--font-space), "Space Grotesk", sans-serif;
+
+  --color-brand-900: #0A0A0A;
+  --color-brand-600: #4F46E5;
+  --color-brand-50: #F8FAFC;
+}
+
+@layer base {
+
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    background-color: white;
+  }
+}

@@ -1,0 +1,12 @@
+fastapi
+uvicorn
+neo4j
+chromadb
+python-multipart
+python-dotenv
+pydantic
+pypdf
+langchain
+langchain-community
+sentence-transformers
+requests

@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  # ---------------------------------------------------------------------------
+  # GRAPH DATABASE (Neo4j)
+  # Stores the symbolic knowledge (Nodes & Edges)
+  # ---------------------------------------------------------------------------
+  neo4j:
+    image: neo4j:5.15.0
+    container_name: aurelius_neo4j
+    ports:
+      - "7474:7474" # HTTP Interface
+      - "7687:7687" # Bolt Protocol (for Python driver)
+    environment:
+      - NEO4J_AUTH=neo4j/password # Change this for production
+      - NEO4J_apoc_export_file_enabled=true
+      - NEO4J_apoc_import_file_enabled=true
+      - NEO4J_dbms_security_procedures_unrestricted=apoc.*
+    volumes:
+      - ./infrastructure/neo4j/data:/data
+      - ./infrastructure/neo4j/logs:/logs
+    networks:
+      - aurelius_net
+    healthcheck:
+      test: [ "CMD-SHELL", "wget --no-verbose --tries=1 --spider localhost:7474 || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ---------------------------------------------------------------------------
+  # VECTOR DATABASE (ChromaDB)
+  # Stores the neural embeddings for semantic search
+  # ---------------------------------------------------------------------------
+  chromadb:
+    image: chromadb/chroma:latest
+    container_name: aurelius_chroma
+    ports:
+      - "8001:8000"
+    volumes:
+      - ./infrastructure/chroma:/chroma/chroma
+    environment:
+      - IS_PERSISTENT=TRUE
+    networks:
+      - aurelius_net
+
+networks:
+  aurelius_net:
+    driver: bridge
