@@ -1,12 +1,12 @@
 # AURELIUS
-## A Neuro-Symbolic Logic Engine for Verifiable Inference
+## A Neuro-Symbolic Reasoning Engine for Verifiable Inference
 
 ---
 
 ## Abstract
 Aurelius is a distributed reasoning engine designed to mitigate the "Hallucination Problem" in Large Language Models (LLMs). By grounding neural generations in a deterministic Knowledge Graph (KG), Aurelius ensures that every answer is mathematically traceable to a source document. 
 
-Unlike standard RAG (Retrieval-Augmented Generation) which retrieves unstructured text chunks, Aurelius retrieves Logic Paths (e.g., `(Subject)-[PREDICATE]->(Object)`), allowing for multi-hop reasoning across disparate data sources.
+Unlike standard RAG (Retrieval-Augmented Generation) which retrieves unstructured text chunks, Aurelius retrieves Logic Paths (e.g.,`(Subject)-[PREDICATE]->(Object)`), allowing for multi-hop reasoning across disparate data sources.
 
 ---
 
@@ -37,7 +37,7 @@ The system operates on a Two-Brain architecture:
     *   *Role:* Verifier & Logician.
 
 ### Technical Stack
-*   **Inference:** Ollama (Llama 3.1 8B / GGUF Quantized)
+*   **Inference:** Ollama (Llama 3.1 8B / GGUF Quantized) or Groq LPU (Low-Latency Cloud)
 *   **Graph Store:** Neo4j (Cypher Query Language)
 *   **Vector Store:** ChromaDB (Semantic Embeddings)
 *   **Backend:** Python 3.12 + FastAPI (Async Event Loop)
