@@ -17,7 +17,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${inter.variable} ${spaceGrotesk.variable} font-sans bg-white text-slate-900 antialiased selection:bg-indigo-100 selection:text-indigo-900`}>
+      <body className={`${inter.variable} ${spaceGrotesk.variable} font-sans bg-[#050505] text-slate-200 antialiased selection:bg-indigo-500/30 selection:text-indigo-200 overflow-x-hidden`}>
         {children}
       </body>
     </html>

@@ -18,6 +18,20 @@
     width: 100%;
     overflow-y: auto;
     overflow-x: hidden;
-    background-color: white;
+    background-color: #050505;
   }
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 30s linear infinite;
 }
