@@ -77,7 +77,7 @@ export default function Home() {
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-5">
               <Link href="/engine">
-                <button className="group relative px-10 py-5 bg-white text-black font-space font-bold text-lg rounded-xl overflow-hidden transition-all hover:scale-105 active:scale-95 shadow-[0_0_50px_-10px_rgba(255,255,255,0.4)]">
+                <button className="cursor-pointer group relative px-10 py-5 bg-white text-black font-space font-bold text-lg rounded-xl overflow-hidden transition-all hover:scale-105 active:scale-95 shadow-[0_0_50px_-10px_rgba(255,255,255,0.4)]">
                   <span className="relative z-10 flex items-center gap-3">
                     INITIALIZE ENGINE <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
                   </span>
