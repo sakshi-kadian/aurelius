@@ -27,7 +27,7 @@ graph TD
     Backend -->|"Result + 3D Coordinates"| Frontend
 ```
 
-The system operates on a Two-Brain architecture:
+**The system operates on a Two-Brain architecture:**
 
 1.  **The Neural Brain (Right Hemisphere) - Llama 3 / ChromaDB**
     *   Handles unstructured semantics, nuance, and natural language generation.
@@ -35,6 +35,8 @@ The system operates on a Two-Brain architecture:
 2.  **The Symbolic Brain (Left Hemisphere) - Neo4j / NetworkX**
     *   Handles rigid facts, logic constraints, and topological relationships.
     *   *Role:* Verifier & Logician.
+
+---
 
 ### Technical Stack
 *   **Inference:** Ollama (Llama 3.1 8B / GGUF Quantized) or Groq LPU (Low-Latency Cloud)
