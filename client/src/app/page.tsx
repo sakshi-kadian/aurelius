@@ -10,18 +10,12 @@ import {
   Zap,
   Database,
   Search,
-  Cpu,
-  Activity,
-  Globe,
   Brain,
   FileText,
-  ChevronRight,
-  Terminal,
-  Code
 } from "lucide-react";
 
-// Import 3D Cosmos Canvas (Ensure this component handles its own suspense)
 import CosmosCanvas from "@/components/cosmos/CosmosCanvas";
+import NavBar from "@/components/nav/NavBar";
 
 export default function Home() {
   const { scrollY } = useScroll();
@@ -29,9 +23,11 @@ export default function Home() {
   const y = useTransform(scrollY, [0, 600], [0, 200]);
 
 
-
   return (
     <div className="relative min-h-screen w-full flex flex-col overflow-x-hidden bg-[#050505] text-slate-200">
+
+      {/* ── Global Navigation ── */}
+      <NavBar />
 
       {/* --- 3D BACKGROUND (HERO ONLY) --- */}
       <motion.div
