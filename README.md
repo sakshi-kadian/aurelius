@@ -1,22 +1,10 @@
 <div align="center">
 
-<br/>
+# AURELIUS
 
-```
- █████╗ ██╗   ██╗██████╗ ███████╗██╗     ██╗██╗   ██╗███████╗
-██╔══██╗██║   ██║██╔══██╗██╔════╝██║     ██║██║   ██║██╔════╝
-███████║██║   ██║██████╔╝█████╗  ██║     ██║██║   ██║███████╗
-██╔══██║██║   ██║██╔══██╗██╔══╝  ██║     ██║██║   ██║╚════██║
-██║  ██║╚██████╔╝██║  ██║███████╗███████╗██║╚██████╔╝███████║
-╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝╚══════╝╚══════╝╚═╝ ╚═════╝ ╚══════╝
-```
+### A Neuro-Symbolic Reasoning Engine for Verifiable AI Inference
 
-### **A Neuro-Symbolic Reasoning Engine for Verifiable AI Inference**
-
-
-> *"Standard LLMs generate. Aurelius verifies."*
-
-<br/>
+ *"Standard LLMs generate. Aurelius verifies."* 
 
 </div>
 
@@ -41,42 +29,38 @@ This is not retrieval. This is **logical inference**.
 
 ## System Architecture
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                         USER INTERFACE                           │
-│              Next.js 16 + React Three Fiber (WebGL)             │
-│         ┌──────────────────┐   ┌──────────────────────┐         │
-│         │  Reasoning       │   │   3D Knowledge        │         │
-│         │  Console         │   │   Cosmos (WebGL)      │         │
-│         │  (Chat + Trace)  │   │   d3-force-3d Layout  │         │
-│         └────────┬─────────┘   └──────────┬───────────┘         │
-└──────────────────┼──────────────────────────┼────────────────────┘
-                   │  Async REST API           │  
-                   ▼                           ▼
-┌─────────────────────────────────────────────────────────────────┐
-│                      FastAPI ENGINE (Python 3.12)                │
-│                                                                  │
-│   /api/v1/ingest     /api/v1/reason     /api/v1/graph           │
-│        │                   │                  │                  │
-│   ┌────▼──────┐    ┌───────▼───────┐   ┌─────▼──────┐          │
-│   │ PDF Engine│    │ LLM Engine    │   │Graph Service│          │
-│   │ (chunking)│    │ (Groq/Ollama) │   │ (Neo4j I/O) │          │
-│   └────┬──────┘    └───────┬───────┘   └─────┬──────┘          │
-│        │                   │                  │                  │
-│   ┌────▼──────┐    ┌───────▼────────────────▼──────┐           │
-│   │ Vector    │    │    PathFinding Service          │           │
-│   │ Service   │    │    (Confidence-Weighted)        │           │
-│   │(ChromaDB) │    └────────────────────────────────┘           │
-└──────┬──────────────────────────────────────────────────────────┘
-       │                           │
-┌──────▼──────┐          ┌─────────▼──────────┐
-│  ChromaDB   │          │       Neo4j         │
-│  (Vectors)  │          │   (Graph + Weights) │
-│  Port 8001  │          │   Bolt Port 7687    │
-└─────────────┘          └────────────────────┘
-       ▲                           ▲
-       └──────── Docker Compose ───┘
-                (aurelius_net bridge)
+```mermaid
+graph TD
+    User([User]) -->|Natural Language Query| FE
+    User -->|Upload PDF| FE
+
+    subgraph FE ["Frontend — Next.js 16 + WebGL"]
+        Console["Reasoning Console\n(Chat + Chain-of-Thought)"] 
+        Canvas["3D Knowledge Cosmos\n(R3F + d3-force-3d)"]
+        Upload["Upload Panel\n(Drag-and-drop PDF)"]
+    end
+
+    FE -->|POST /api/v1/ingest| Ingest
+    FE -->|POST /api/v1/reason| Reason
+    FE -->|GET /api/v1/graph| Graph
+
+    subgraph BE ["Backend — FastAPI (Python 3.12)"]
+        Ingest["PDF Engine\n+ Vector Store"]
+        Reason["LLM Engine\n+ PathFinding"]
+        Graph["Graph Service"]
+    end
+
+    Ingest -->|Store embeddings| Chroma[(ChromaDB\nPort 8001)]
+    Ingest -->|Write triplets| Neo4j[(Neo4j\nBolt 7687)]
+    Reason -->|Query similar| Chroma
+    Reason -->|Traverse graph| Neo4j
+    Reason -->|Extract entities / Synthesize| LLM[["Groq LPU\nor Local Ollama"]]
+    Graph -->|Read topology| Neo4j
+
+    subgraph Infra ["Infrastructure — Docker Compose"]
+        Chroma
+        Neo4j
+    end
 ```
 
 ### The Two-Brain Architecture
@@ -96,41 +80,36 @@ The system's core insight: **use neural intelligence to build the symbolic graph
 
 A single query traverses four deterministic stages:
 
+**Example query:** `"What did attention mechanisms improve?"`
+
+**Stage 1 — Entity Extraction (Neural)**
+
+Groq Llama 3 extracts named entities from the natural language query.
 ```
-QUERY: "What did attention mechanisms improve?"
-         │
-         ▼
- ┌─── STAGE 1: Entity Extraction (Neural) ─────────────────┐
- │  Groq Llama 3 extracts named entities from the query:    │
- │  → ["Attention Mechanisms", "Translation Quality"]       │
- └──────────────────────────────────────────────────────────┘
-         │
-         ▼
- ┌─── STAGE 2: Vector Search (Neural Retrieval) ───────────┐
- │  ChromaDB finds semantically similar text chunks:        │
- │  → 5 most relevant passages from ingested documents      │
- └──────────────────────────────────────────────────────────┘
-         │
-         ▼
- ┌─── STAGE 3: Graph Traversal (Symbolic Reasoning) ───────┐
- │  Confidence-Weighted Pathfinding in Neo4j:               │
- │                                                          │
- │  (Attention Mechanisms)                                  │
- │       -[IMPROVED {confidence: 1.0}]→                     │
- │  (Translation Quality)                                   │
- │       -[MEASURED_BY {confidence: 0.95}]→                 │
- │  (BLEU Score)                                            │
- │                                                          │
- │  Path Confidence = 1.0 × 0.95 = 0.95 (Golden Beam ✓)   │
- └──────────────────────────────────────────────────────────┘
-         │
-         ▼
- ┌─── STAGE 4: Grounded Synthesis (Neural Output) ─────────┐
- │  Llama 3 synthesizes ONLY from verified path + chunks:   │
- │  → "The graph shows: Attention Mechanisms → IMPROVED →   │
- │     Translation Quality. Based on Vaswani et al. (2017), │
- │     this was measured via 2 BLEU score improvement..."   │
- └──────────────────────────────────────────────────────────┘
+Output: ["Attention Mechanisms", "Translation Quality"]
+```
+
+**Stage 2 — Vector Search (Neural Retrieval)**
+
+ChromaDB retrieves the 5 most semantically similar text chunks from ingested documents.
+
+**Stage 3 — Graph Traversal (Symbolic Reasoning)**
+
+Confidence-weighted pathfinding selects the most reliable reasoning chain:
+```
+(Attention Mechanisms) -[IMPROVED {confidence: 1.0}]-> (Translation Quality)
+                       -[MEASURED_BY {confidence: 0.95}]-> (BLEU Score)
+
+Path Confidence = 1.0 x 0.95 = 0.95  -->  Golden Beam activated
+```
+
+**Stage 4 — Grounded Synthesis (Neural Output)**
+
+Llama 3 synthesizes an answer grounded exclusively in the verified path and retrieved chunks:
+```
+"The graph shows: Attention Mechanisms -> IMPROVED -> Translation Quality.
+ Based on Vaswani et al. (2017), this was measured via a 2 BLEU score
+ improvement, replacing recurrent architectures with self-attention."
 ```
 
 ---
@@ -236,57 +215,43 @@ simulation.tick(400); // Converge to stable layout synchronously
 
 ```
 aurelius/
-│
-├── 📁 server/                          # FastAPI Backend (Python 3.12)
+├── server/                             # FastAPI Backend (Python 3.12)
 │   ├── app/
 │   │   ├── main.py                     # App factory, CORS, health check, rate limiting
 │   │   ├── api/
-│   │   │   ├── ingest.py               # POST /api/v1/ingest — PDF ingestion pipeline
-│   │   │   ├── reason.py               # POST /api/v1/reason — Full reasoning loop ⭐
-│   │   │   └── graph.py                # GET /api/v1/graph  — Graph data for 3D viz
+│   │   │   ├── ingest.py               # POST /api/v1/ingest  — PDF ingestion pipeline
+│   │   │   ├── reason.py               # POST /api/v1/reason  — Core reasoning loop *
+│   │   │   └── graph.py                # GET  /api/v1/graph   — Graph data for 3D viz
 │   │   ├── services/
-│   │   │   ├── llm_engine.py           # Async LLM wrapper (Groq + Ollama) ⭐
-│   │   │   ├── graph_service.py        # Neo4j CRUD + fuzzy entity search ⭐
-│   │   │   ├── path_service.py         # Confidence-weighted Dijkstra pathfinder ⭐
+│   │   │   ├── llm_engine.py           # Async LLM wrapper (Groq + Ollama)          *
+│   │   │   ├── graph_service.py        # Neo4j CRUD + fuzzy entity search            *
+│   │   │   ├── path_service.py         # Confidence-weighted Dijkstra pathfinder     *
 │   │   │   ├── vector_service.py       # ChromaDB embedding store
 │   │   │   └── pdf_engine.py           # PDF extraction + sliding window chunking
 │   │   └── db/
 │   │       ├── neo4j_client.py         # Singleton Neo4j driver
-│   │       └── chroma_client.py        # Singleton ChromaDB client (port 8001)
-│   ├── requirements.txt                # Pinned dependencies
-│   └── .env.example                    # Environment variable template
+│   │       └── chroma_client.py        # Singleton ChromaDB client
+│   ├── requirements.txt
+│   └── .env.example
 │
-├── 📁 client/                          # Next.js 16 Frontend (TypeScript)
+├── client/                             # Next.js 16 Frontend (TypeScript)
 │   ├── src/
 │   │   ├── app/
 │   │   │   ├── page.tsx                # Landing page (Framer Motion + Bento grid)
-│   │   │   ├── layout.tsx              # Root layout (Inter + Space Grotesk fonts)
-│   │   │   └── engine/
-│   │   │       └── page.tsx            # Engine page (3D + Console + Upload + HUD)
+│   │   │   └── engine/page.tsx         # Engine page (3D + Console + Upload + HUD)
 │   │   ├── components/
-│   │   │   ├── cosmos/
-│   │   │   │   ├── CosmosCanvas.tsx    # R3F Canvas (Bloom + Vignette + Stars)
-│   │   │   │   └── SceneGraph.tsx      # 3D graph (d3-force-3d, edges, Golden Beam) ⭐
-│   │   │   ├── console/
-│   │   │   │   └── ReasoningConsole.tsx# Chat + Chain-of-Thought + Explainability ⭐
-│   │   │   ├── upload/
-│   │   │   │   └── UploadPanel.tsx     # Drag-and-drop PDF injection UI ⭐
-│   │   │   └── nav/
-│   │   │       └── NavBar.tsx          # Live health status navigation bar ⭐
-│   │   └── store/
-│   │       └── useGraphStore.ts        # Zustand store (graph + path + health state)
-│   └── .env.local                      # NEXT_PUBLIC_API_URL configuration
-│
-├── 📁 infrastructure/
-│   ├── neo4j/                          # Persistent Neo4j data volume
-│   └── chroma/                         # Persistent ChromaDB data volume
+│   │   │   ├── cosmos/SceneGraph.tsx   # 3D graph — d3-force-3d, edges, Golden Beam  *
+│   │   │   ├── console/ReasoningConsole.tsx  # Chat + Chain-of-Thought + Explainability *
+│   │   │   ├── upload/UploadPanel.tsx  # Drag-and-drop PDF injection UI
+│   │   │   └── nav/NavBar.tsx          # Live health status navigation bar
+│   │   └── store/useGraphStore.ts      # Zustand store (graph + path + health state)
+│   └── .env.local
 │
 ├── docker-compose.yml                  # Neo4j 5.15 + ChromaDB orchestration
-├── IMPLEMENTATION_PLAN                 # Phase-by-phase build roadmap
-└── README.md                           # This document
+└── README.md
 ```
 
-> Files marked ⭐ are the core algorithmic contributions.
+> Files marked `*` are the core algorithmic contributions.
 
 ---
 
@@ -566,9 +531,10 @@ The medical and scientific domains — where Aurelius was primarily tested — h
 
 ## Acknowledgements
 
-- **Attention Is All You Need** (Vaswani et al., 2017) — primary test document for graph extraction validation
-- **Neo4j Cypher Documentation** — for path traversal query design
-- **Groq** — for providing LPU inference access that made real-time triplet extraction feasible
+- **"Think-on-Graph: Deep and Responsible Reasoning of LLMs on Knowledge Graphs"** (Sun et al., ICLR 2024) — foundational reference for the LLM + Knowledge Graph reasoning loop that Aurelius implements
+- **"Survey on Hallucination in Natural Language Generation"** (Ji et al., ACM Computing Surveys 2023) — canonical survey on the core problem this project was built to solve
+- **"Chain-of-Thought Prompting Elicits Reasoning in Large Language Models"** (Wei et al., NeurIPS 2022) — conceptual basis for the step-by-step reasoning trace in the console
+- **Neo4j Cypher Documentation** — for path traversal and graph query design
 - **React Three Fiber** — for making 3D WebGL accessible and composable in React
 
 ---
@@ -577,7 +543,7 @@ The medical and scientific domains — where Aurelius was primarily tested — h
 
 <br/>
 
-**© 2026 Aurelius · Research-Grade Neuro-Symbolic AI**
+**© 2026 Aurelius — Research-Grade Neuro-Symbolic AI**
 
 *Built to solve the Hallucination Problem. One graph at a time.*
 
