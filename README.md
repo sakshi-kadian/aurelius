@@ -34,30 +34,30 @@ graph TD
     User([User]) -->|Natural Language Query| FE
     User -->|Upload PDF| FE
 
-    subgraph FE ["Frontend — Next.js 16 + WebGL"]
-        Console["Reasoning Console\n(Chat + Chain-of-Thought)"] 
-        Canvas["3D Knowledge Cosmos\n(R3F + d3-force-3d)"]
-        Upload["Upload Panel\n(Drag-and-drop PDF)"]
+    subgraph FE ["Frontend (Next.js + WebGL)"]
+        Console["Reasoning Console<br>(Chat + Chain-of-Thought)"] 
+        Canvas["3D Knowledge Cosmos<br>(R3F + d3-force-3d)"]
+        Upload["Upload Panel<br>(Drag-and-drop PDF)"]
     end
 
     FE -->|POST /api/v1/ingest| Ingest
     FE -->|POST /api/v1/reason| Reason
     FE -->|GET /api/v1/graph| Graph
 
-    subgraph BE ["Backend — FastAPI (Python 3.12)"]
-        Ingest["PDF Engine\n+ Vector Store"]
-        Reason["LLM Engine\n+ PathFinding"]
+    subgraph BE ["Backend (FastAPI)"]
+        Ingest["PDF Engine<br>+ Vector Store"]
+        Reason["LLM Engine<br>+ PathFinding"]
         Graph["Graph Service"]
     end
 
-    Ingest -->|Store embeddings| Chroma[(ChromaDB\nPort 8001)]
-    Ingest -->|Write triplets| Neo4j[(Neo4j\nBolt 7687)]
+    Ingest -->|Store embeddings| Chroma[(ChromaDB<br>Port 8001)]
+    Ingest -->|Write triplets| Neo4j[(Neo4j<br>Bolt 7687)]
     Reason -->|Query similar| Chroma
     Reason -->|Traverse graph| Neo4j
-    Reason -->|Extract entities / Synthesize| LLM[["Groq LPU\nor Local Ollama"]]
+    Reason -->|Extract entities / Synthesize| LLM[["Groq LPU<br>or Local Ollama"]]
     Graph -->|Read topology| Neo4j
 
-    subgraph Infra ["Infrastructure — Docker Compose"]
+    subgraph Infra ["Infrastructure (Docker Compose)"]
         Chroma
         Neo4j
     end
@@ -427,7 +427,7 @@ curl http://localhost:8000/api/v1/graph
 
 ### `GET /health`
 
-Comprehensive health check — verifies all dependent services simultaneously.
+Comprehensive health check - verifies all dependent services simultaneously.
 
 ```json
 {
@@ -458,9 +458,9 @@ Aurelius uses a cohesive visual language built for scientific credibility and pr
 | `--font-mono` | System monospace | Console, code, metrics |
 
 **3D Post-Processing Stack:**
-- Bloom (luminanceThreshold: 1, intensity: 1.5) — emissive node glow
-- Vignette (darkness: 1.1) — cinematic depth
-- Stars (count: 5000) — cognitive "universe" metaphor
+- Bloom (luminanceThreshold: 1, intensity: 1.5) - emissive node glow
+- Vignette (darkness: 1.1) - cinematic depth
+- Stars (count: 5000) - cognitive "universe" metaphor
 
 ---
 
@@ -516,26 +516,26 @@ Graph and vector data survive container restarts via volume mounts:
 
 This project was built during exploratory research into the intersection of **neuro-symbolic AI** and **knowledge representation**. The primary failure mode addressed is the inability of pure LLM systems to distinguish between "what sounds true" and "what is provably true."
 
-The medical and scientific domains — where Aurelius was primarily tested — have zero tolerance for hallucination. A fact-tracing graph system where every claim has a provenance trail is not merely useful, it is necessary.
+The medical and scientific domains - where Aurelius was primarily tested — have zero tolerance for hallucination. A fact-tracing graph system where every claim has a provenance trail is not merely useful, it is necessary.
 
 ### Future Research
 
-- **Temporal Triplets** — Extend the data model with a `timestamp` property on relationships, enabling queries like *"What did X claim in 2020 vs. 2024?"* and tracking knowledge drift
-- **Recursive Self-Querying** — Allow the reasoning engine to detect gaps in the graph mid-traversal and autonomously generate a new search query to fill them before answering
-- **Probabilistic Edge Inference** — Use Bayesian network methods to infer new edges from existing ones at sub-threshold confidence, expanding the symbolic graph beyond what was explicitly extracted
-- **Multi-Document Entity Resolution** — Improved entity disambiguation across documents (e.g., merging "GPT-4", "GPT4", and "OpenAI GPT-4" into a single resolved node)
-- **Federated Knowledge Graphs** — Distributed Neo4j cluster for querying across independently maintained knowledge bases
-- **Graph Neural Network Augmentation** — Hybrid GNN layer that can perform learned link prediction on the symbolic graph, bridging the hard boundary between neural and symbolic
+- **Temporal Triplets** - Extend the data model with a `timestamp` property on relationships, enabling queries like *"What did X claim in 2020 vs. 2024?"* and tracking knowledge drift
+- **Recursive Self-Querying** - Allow the reasoning engine to detect gaps in the graph mid-traversal and autonomously generate a new search query to fill them before answering
+- **Probabilistic Edge Inference** - Use Bayesian network methods to infer new edges from existing ones at sub-threshold confidence, expanding the symbolic graph beyond what was explicitly extracted
+- **Multi-Document Entity Resolution** - Improved entity disambiguation across documents (e.g., merging "GPT-4", "GPT4", and "OpenAI GPT-4" into a single resolved node)
+- **Federated Knowledge Graphs** - Distributed Neo4j cluster for querying across independently maintained knowledge bases
+- **Graph Neural Network Augmentation** - Hybrid GNN layer that can perform learned link prediction on the symbolic graph, bridging the hard boundary between neural and symbolic
 
 ---
 
 ## Acknowledgements
 
-- **"Think-on-Graph: Deep and Responsible Reasoning of LLMs on Knowledge Graphs"** (Sun et al., ICLR 2024) — foundational reference for the LLM + Knowledge Graph reasoning loop that Aurelius implements
-- **"Survey on Hallucination in Natural Language Generation"** (Ji et al., ACM Computing Surveys 2023) — canonical survey on the core problem this project was built to solve
-- **"Chain-of-Thought Prompting Elicits Reasoning in Large Language Models"** (Wei et al., NeurIPS 2022) — conceptual basis for the step-by-step reasoning trace in the console
-- **Neo4j Cypher Documentation** — for path traversal and graph query design
-- **React Three Fiber** — for making 3D WebGL accessible and composable in React
+- **"Think-on-Graph: Deep and Responsible Reasoning of LLMs on Knowledge Graphs"** (Sun et al., ICLR 2024) - foundational reference for the LLM + Knowledge Graph reasoning loop that Aurelius implements
+- **"Survey on Hallucination in Natural Language Generation"** (Ji et al., ACM Computing Surveys 2023) - canonical survey on the core problem this project was built to solve
+- **"Chain-of-Thought Prompting Elicits Reasoning in Large Language Models"** (Wei et al., NeurIPS 2022) - conceptual basis for the step-by-step reasoning trace in the console
+- **Neo4j Cypher Documentation** - for path traversal and graph query design
+- **React Three Fiber** - for making 3D WebGL accessible and composable in React
 
 ---
 
@@ -543,7 +543,7 @@ The medical and scientific domains — where Aurelius was primarily tested — h
 
 <br/>
 
-**© 2026 Aurelius — Research-Grade Neuro-Symbolic AI**
+**Aurelius - Research-Grade Neuro-Symbolic AI**
 
 *Built to solve the Hallucination Problem. One graph at a time.*
 
