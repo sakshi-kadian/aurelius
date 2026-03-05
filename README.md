@@ -34,7 +34,7 @@ graph TD
     User([User]) -->|Natural Language Query| FE
     User -->|Upload PDF| FE
 
-    subgraph FE ["Frontend (Next.js + WebGL)"]
+    subgraph FE [Frontend — Next.js/WebGL]
         Console["Reasoning Console<br>(Chat + Chain-of-Thought)"] 
         Canvas["3D Knowledge Cosmos<br>(R3F + d3-force-3d)"]
         Upload["Upload Panel<br>(Drag-and-drop PDF)"]
@@ -44,7 +44,7 @@ graph TD
     FE -->|POST /api/v1/reason| Reason
     FE -->|GET /api/v1/graph| Graph
 
-    subgraph BE ["Backend (FastAPI)"]
+    subgraph BE [Backend — FastAPI]
         Ingest["PDF Engine<br>+ Vector Store"]
         Reason["LLM Engine<br>+ PathFinding"]
         Graph["Graph Service"]
@@ -57,7 +57,7 @@ graph TD
     Reason -->|Extract entities / Synthesize| LLM[["Groq LPU<br>or Local Ollama"]]
     Graph -->|Read topology| Neo4j
 
-    subgraph Infra ["Infrastructure (Docker Compose)"]
+    subgraph Infra [Infrastructure — Docker Compose]
         Chroma
         Neo4j
     end
